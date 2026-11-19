@@ -1,0 +1,8 @@
+# Merge these lines into the project's requirements.txt (the existing file was not available to Claude).
+fastembed==0.9.1
+faiss-cpu>=1.8,<2
+rank-bm25==0.2.2
+numpy>=1.26,<3
+pydantic>=2.6,<3
+# Development / test only
+pytest>=8,<10

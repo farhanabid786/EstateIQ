@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EstateIQ</title>
+<style>
+:root{--bg:#0b1630;--panel:#122046;--text:#f4f6fb;--muted:#9fb0d0;--gold:#c9a24a;--err:#ff8a8a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.5 system-ui,sans-serif;display:flex;flex-direction:column;min-height:100vh}
+header,main,form{width:100%;max-width:820px;margin:0 auto;padding:12px 16px}
+h1{margin:0;font-size:1.5rem}h1 span{color:var(--gold)}
+p.sub{margin:.25rem 0 0;color:var(--muted)}
+main{flex:1;display:flex;flex-direction:column;gap:12px;overflow-y:auto}
+.msg{background:var(--panel);border-radius:12px;padding:12px 14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.msg.user{border-left:3px solid var(--gold)}
+.msg.error{color:var(--err)}
+.summary{margin-top:8px;color:var(--muted);font-size:.92rem}
+.sources{margin-top:8px;font-size:.9rem}.sources a{color:var(--gold)}
+form{display:flex;gap:8px;flex-wrap:wrap}
+textarea{flex:1 1 260px;min-height:48px;border-radius:10px;border:1px solid #2a3b6d;background:var(--panel);color:var(--text);padding:10px;font:inherit}
+select,button{border-radius:10px;border:1px solid #2a3b6d;background:var(--panel);color:var(--text);padding:10px 14px;font:inherit}
+button.primary{background:var(--gold);color:#0b1630;border:0;font-weight:600}
+button:disabled{opacity:.6}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+</style>
+</head>
+<body>
+<header>
+<h1>Estate<span>IQ</span></h1>
+<p class="sub">Source-grounded answers about DarGlobal and Wasalt from indexed official public information.</p>
+</header>
+<main id="log" aria-live="polite"></main>
+<form id="form">
+<select id="company" aria-label="Company scope">
+<option value="both">Both</option><option value="darglobal">DarGlobal</option><option value="wasalt">Wasalt</option>
+</select>
+<textarea id="question" maxlength="2000" required placeholder="Ask about DarGlobal or Wasalt…" aria-label="Question"></textarea>
+<button class="primary" id="send" type="submit">Send</button>
+<button type="button" id="clear">Clear</button>
+</form>
+<script>
+const log = document.getElementById("log");
+const form = document.getElementById("form");
+const box = document.getElementById("question");
+const send = document.getElementById("send");
+
+function add(text, cls) {
+  const el = document.createElement("div");
+  el.className = "msg " + cls;
+  el.dir = "auto";
+  el.textContent = text;
+  log.appendChild(el);
+  el.scrollIntoView({block: "end"});
+  return el;
+}
+
+function addSources(el, sources) {
+  if (!sources.length) return;
+  const wrap = document.createElement("div");
+  wrap.className = "sources";
+  sources.forEach((s, i) => {
+    const a = document.createElement("a");
+    a.href = s.url; a.target = "_blank"; a.rel = "noopener noreferrer";
+    a.textContent = "[S" + (i + 1) + "] " + s.title;
+    wrap.appendChild(a);
+    wrap.appendChild(document.createElement("br"));
+  });
+  el.appendChild(wrap);
+}
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const question = box.value.trim();
+  if (!question) return;
+  add(question, "user");
+  box.value = "";
+  send.disabled = true;
+  const pending = add("Searching sources…", "bot");
+  try {
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({question, company: document.getElementById("company").value, language: "auto"})
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.detail || "Request failed");
+    pending.textContent = data.answer;
+    if (data.english_summary) {
+      const s = document.createElement("div");
+      s.className = "summary"; s.dir = "ltr";
+      s.textContent = "English summary: " + data.english_summary;
+      pending.appendChild(s);
+    }
+    addSources(pending, data.sources);
+  } catch (err) {
+    pending.className = "msg error";
+    pending.textContent = err.message || "Something went wrong.";
+  } finally {
+    send.disabled = false;
+    box.focus();
+  }
+});
+box.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); form.requestSubmit(); }
+});
+document.getElementById("clear").addEventListener("click", () => { log.textContent = ""; });
+</script>
+</body>
+</html>

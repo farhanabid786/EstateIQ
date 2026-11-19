@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#081827">
+  <title>EstateIQ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/frontend/styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <img class="brand-logo" src="/frontend/estateiq-logo.svg" alt="" width="44" height="44">
+        <div>
+          <h1>EstateIQ</h1>
+          <p>Real-estate intelligence grounded in official sources</p>
+        </div>
+      </div>
+      <button id="clear-chat" class="text-button" type="button">Clear chat</button>
+    </header>
+
+    <section class="chat-layout" aria-label="EstateIQ chat">
+      <aside class="scope-panel">
+        <label for="company">Company scope</label>
+        <select id="company" name="company">
+          <option value="both">Both</option>
+          <option value="darglobal">DarGlobal</option>
+          <option value="wasalt">Wasalt</option>
+        </select>
+
+        <div class="suggestions" aria-label="Suggested questions">
+          <p>Suggested questions</p>
+          <button type="button" data-question="What is DarGlobal known for?">What is DarGlobal known for?</button>
+          <button type="button" data-question="What services does Wasalt provide?">What services does Wasalt provide?</button>
+          <button type="button" data-question="What official projects are described by DarGlobal?">What projects are described by DarGlobal?</button>
+        </div>
+        <p class="coverage-notice">
+          Knowledge coverage: DarGlobal official public sources are currently indexed.
+          Wasalt information is temporarily unavailable because its public website restricts automated access.
+          EstateIQ will not invent answers where verified sources are unavailable.
+        </p>
+      </aside>
+
+      <div class="conversation">
+        <div id="messages" class="messages" aria-live="polite">
+          <article class="message assistant">
+            <div class="message-content">
+              Ask a question about publicly available DarGlobal or Wasalt information.
+            </div>
+          </article>
+        </div>
+
+        <form id="chat-form" class="chat-form">
+          <label class="sr-only" for="question">Your question</label>
+          <textarea id="question" name="question" maxlength="2000" rows="2" placeholder="Ask about DarGlobal or Wasalt..." required></textarea>
+          <button id="send-button" type="submit">Send</button>
+        </form>
+        <p id="status" class="status" role="status"></p>
+      </div>
+    </section>
+  </main>
+  <script src="/frontend/app.js"></script>
+</body>
+</html>

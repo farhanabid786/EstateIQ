@@ -1,0 +1,69 @@
+{
+  "queries_evaluated": 12,
+  "recall": {
+    "recall@5": 0.4444,
+    "recall@10": 0.6667
+  },
+  "mrr": 0.4233,
+  "relevant_document_retrieval_rate": 0.6667,
+  "empty_retrieval_rate": 0.6667,
+  "correct_company_attribution": 1.0,
+  "company_attribution_denominator": 7,
+  "out_of_scope_queries": 3,
+  "capabilities": {
+    "english_query_retrieving_english_evidence": {
+      "queries": 7,
+      "recall@5": 0.5714,
+      "recall@10": 0.8571,
+      "mrr": 0.5442,
+      "relevant_document_retrieval_rate": 0.8571
+    },
+    "arabic_query_retrieving_english_evidence": {
+      "queries": 2,
+      "recall@5": 0.0,
+      "recall@10": 0.0,
+      "mrr": 0.0,
+      "relevant_document_retrieval_rate": 0.0
+    },
+    "unsupported_query": {
+      "queries": 2,
+      "empty_retrieval_rate": 0.5
+    },
+    "unsupported_arabic_query": {
+      "queries": 1,
+      "empty_retrieval_rate": 1.0
+    }
+  },
+  "failures": [
+    {
+      "question": "What is DarGlobal and what areas does it operate in?",
+      "relevant": [
+        "darglobal_f8e2f6d7c94bd091"
+      ],
+      "retrieved_top": [
+        "darglobal_2bdf0f6f3cf24e54",
+        "darglobal_084740db93b34f09",
+        "darglobal_0e8d826d34f68de3",
+        "darglobal_2fabf404718a5999",
+        "darglobal_2b4c83ec217d534c"
+      ]
+    },
+    {
+      "question": "ما موقع مشروع أيدا التابع لدار جلوبال؟",
+      "relevant": [
+        "darglobal_05059d787fc33873",
+        "darglobal_81c559826d054ad8"
+      ],
+      "retrieved_top": []
+    },
+    {
+      "question": "أين تقع ماريوت ريزيدنسز في عُمان؟",
+      "relevant": [
+        "darglobal_084740db93b34f09"
+      ],
+      "retrieved_top": []
+    }
+  ],
+  "mode": "bm25",
+  "skipped": 0
+}

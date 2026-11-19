@@ -1,0 +1,3 @@
+{"question": "REPLACE with an English question whose answer is in the corpus", "company": "darglobal", "relevant_document_ids": ["REPLACE_WITH_REAL_DOCUMENT_ID"]}
+{"question": "REPLACE with an Arabic question about English source content", "company": "wasalt", "relevant_document_ids": ["REPLACE_WITH_REAL_DOCUMENT_ID"]}
+{"question": "REPLACE with a question that names a project or brand exactly", "company": "both", "relevant_document_ids": ["REPLACE_WITH_REAL_DOCUMENT_ID", "OPTIONAL_SECOND_RELEVANT_DOCUMENT_ID"]}

@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: estateiq
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: OPENROUTER_MODEL
+        value: nvidia/nemotron-3.5-super-vl:free
+      - key: CORS_ORIGINS
+        value: ""
+      - key: LOG_LEVEL
+        value: INFO
