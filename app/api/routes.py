@@ -33,7 +33,9 @@ def health(request: Request) -> HealthResponse:
     return HealthResponse(
         status="ok" if index is not None else "degraded",
         index_loaded=index is not None,
-        embedding_model_ready=state.embedder.is_loaded,
+        embedding_provider="jina",
+        embedding_provider_configured=state.embedder.is_configured,
+        embedding_dimensions=state.settings.embedding_dim,
         llm_configured=state.settings.llm_configured,
         embedding_model=state.settings.embedding_model,
         index_build_id=index.build_id if index is not None else None,

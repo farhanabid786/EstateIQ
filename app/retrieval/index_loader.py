@@ -14,6 +14,7 @@ from app.retrieval.manifest import (
     ARTIFACT_FILENAMES, CHUNKS_FILENAME, FAISS_FILENAME, INDEX_SCHEMA_VERSION,
     MANIFEST_FILENAME, SQLITE_FILENAME, ManifestError, read_manifest, sha256_file,
 )
+from app.memory_diagnostics import log_rss
 
 logger = logging.getLogger(__name__)
 
@@ -85,6 +86,8 @@ def load_index(
         )
     if manifest["embedding_model"] != settings.embedding_model:
         raise IndexLoadError("Index was built with a different embedding model than configured")
+    if manifest.get("embedding_provider") != "jina":
+        raise IndexLoadError("Index was not built with the Jina embedding provider")
     if manifest["embedding_dim"] != settings.embedding_dim:
         raise IndexLoadError("Index embedding dimension differs from the configured dimension")
     if manifest["chunk_count"] != manifest["faiss_vector_count"]:
@@ -129,4 +132,5 @@ def load_index(
     logger.info(
         "Loaded index %s: %d documents, %d chunks", manifest["build_id"], counts[0], counts[1]
     )
+    log_rss("after_index_load")
     return LoadedIndex(manifest=manifest, faiss=faiss_store, bm25=bm25, metadata=metadata)

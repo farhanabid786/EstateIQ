@@ -125,6 +125,9 @@ class MetadataStore:
         except sqlite3.Error as exc:
             raise MetadataError("Cannot open metadata database") from exc
         conn.row_factory = sqlite3.Row
+        conn.execute("PRAGMA cache_size = -4096")
+        conn.execute("PRAGMA temp_store = FILE")
+        conn.execute("PRAGMA mmap_size = 0")
         try:
             yield conn
         except sqlite3.Error as exc:

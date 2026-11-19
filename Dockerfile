@@ -3,7 +3,8 @@ FROM python:3.10-slim
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
-    FASTEMBED_CACHE_PATH=/app/.fastembed_cache
+    MAX_CONCURRENT_REQUESTS=1 \
+    LLM_MAX_OUTPUT_TOKENS=800
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends libgomp1 \
@@ -15,8 +16,6 @@ COPY requirements-backend.txt .
 RUN pip install -r requirements-backend.txt
 
 # Bake the embedding model into the image so the service never downloads it at runtime.
-RUN python -c "from fastembed import TextEmbedding; TextEmbedding('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')"
-
 COPY app ./app
 COPY frontend ./frontend
 COPY data/index ./data/index

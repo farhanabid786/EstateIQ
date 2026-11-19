@@ -129,6 +129,7 @@ def build_index(
             "index_schema_version": INDEX_SCHEMA_VERSION,
             "build_id": build_id,
             "built_at": built_at,
+            "embedding_provider": "jina",
             "embedding_model": settings.embedding_model,
             "embedding_dim": settings.embedding_dim,
             "faiss_index_type": INDEX_TYPE_NAME,

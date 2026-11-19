@@ -76,6 +76,11 @@ class Settings:
     llm_max_output_tokens: int
     max_concurrent_requests: int
     log_level: str
+    jina_api_key: str = ""
+    jina_api_url: str = "https://api.jina.ai/v1/embeddings"
+    embedding_batch_size: int = 32
+    embedding_timeout_seconds: float = 30.0
+    embedding_max_retries: int = 2
     hybrid_top_k: int = 10
     expansion_top_n: int = 2
     min_bm25_score: float = 3.0
@@ -121,9 +126,9 @@ def _build_settings() -> Settings:
         frontend_dir=frontend_dir,
         embedding_model=os.environ.get(
             "EMBEDDING_MODEL",
-            "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+            "jina-embeddings-v3",
         ),
-        embedding_dim=_get_int("EMBEDDING_DIM", 384),
+        embedding_dim=_get_int("EMBEDDING_DIM", 512),
         chunk_size_chars=_get_int("CHUNK_SIZE_CHARS", 900, 200),
         chunk_overlap_chars=_get_int("CHUNK_OVERLAP_CHARS", 150, 0),
         dense_top_k=_get_int("DENSE_TOP_K", 20),
@@ -139,8 +144,8 @@ def _build_settings() -> Settings:
         openrouter_base_url=os.environ.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
         llm_timeout_seconds=_get_int("LLM_TIMEOUT_SECONDS", 45),
         llm_max_retries=_get_int("LLM_MAX_RETRIES", 1, 0),
-        llm_max_output_tokens=_get_int("LLM_MAX_OUTPUT_TOKENS", 1800),
-        max_concurrent_requests=_get_int("MAX_CONCURRENT_REQUESTS", 2),
+        llm_max_output_tokens=_get_int("LLM_MAX_OUTPUT_TOKENS", 800),
+        max_concurrent_requests=_get_int("MAX_CONCURRENT_REQUESTS", 1),
         log_level=os.environ.get("LOG_LEVEL", "INFO").upper(),
         hybrid_top_k=_get_int("HYBRID_TOP_K", 10),
         expansion_top_n=_get_int("EXPANSION_TOP_N", 2, 0),
@@ -152,6 +157,11 @@ def _build_settings() -> Settings:
         cors_origins=tuple(
             o.strip() for o in os.environ.get("CORS_ORIGINS", "").split(",") if o.strip()
         ),
+        jina_api_key=os.environ.get("JINA_API_KEY", "").strip(),
+        jina_api_url=os.environ.get("JINA_API_URL", "https://api.jina.ai/v1/embeddings"),
+        embedding_batch_size=_get_int("EMBEDDING_BATCH_SIZE", 16),
+        embedding_timeout_seconds=_get_float("EMBEDDING_TIMEOUT_SECONDS", 30.0),
+        embedding_max_retries=_get_int("EMBEDDING_MAX_RETRIES", 2, 0),
     )
     if settings.chunk_overlap_chars >= settings.chunk_size_chars:
         raise ConfigError("CHUNK_OVERLAP_CHARS must be smaller than CHUNK_SIZE_CHARS")

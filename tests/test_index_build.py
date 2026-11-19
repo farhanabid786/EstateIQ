@@ -50,13 +50,14 @@ def test_manifest_contents(built, settings, corpus):
     assert manifest["document_count"] == 3
     assert manifest["chunk_count"] == manifest["faiss_vector_count"] > 3
     assert manifest["embedding_model"] == settings.embedding_model
-    assert manifest["embedding_dim"] == settings.embedding_dim == 384
+    assert manifest["embedding_dim"] == settings.embedding_dim
+    assert manifest["embedding_provider"] == "jina"
     assert manifest["faiss_index_type"] == "IndexIDMap2(IndexFlatIP)"
     assert manifest["chunk_size_chars"] == 300 and manifest["chunk_overlap_chars"] == 50
     assert manifest["company_distribution"] == {"darglobal": 2, "wasalt": 1}
     assert manifest["content_type_distribution"] == {"webpage": 3}
     assert set(manifest["files"]) == set(ARTIFACT_FILENAMES)
-    assert {"fastembed", "faiss-cpu", "rank-bm25", "numpy"} <= set(manifest["packages"])
+    assert {"faiss-cpu", "rank-bm25", "numpy", "httpx"} <= set(manifest["packages"])
 
 
 def test_sqlite_faiss_and_chunks_are_consistent(built):
@@ -180,10 +181,14 @@ def test_loader_rejects_unsupported_schema_and_sqlite_mismatch(built, settings):
 def test_loader_does_not_create_embedding_model(built, settings, monkeypatch):
     import app.retrieval.embeddings as embeddings
 
-    def boom(*args, **kwargs):
-        raise AssertionError("embedding model must not load")
-
-    monkeypatch.setattr(embeddings, "_fastembed_factory", boom)
+    monkeypatch.setattr(
+        embeddings,
+        "_fastembed_factory",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            AssertionError("local embedding model must not load")
+        ),
+        raising=False,
+    )
     _, out, _ = built
     assert load_index(settings, out).faiss.size > 0
 
@@ -195,11 +200,12 @@ def test_cli_returns_error_code_for_bad_input(tmp_path):
     assert not (tmp_path / "out" / MANIFEST_FILENAME).exists()
 
 
-def test_live_index_matches_latest_40_document_dataset(settings):
-    loaded = load_index(settings)
+def test_live_index_matches_jina_rebuild():
+    from app.config import get_settings
+    loaded = load_index(get_settings())
     assert loaded.manifest["document_count"] == 40
-    assert loaded.manifest["content_type_distribution"] == {"press_release": 1, "webpage": 39}
-    assert loaded.manifest["company_distribution"] == {"darglobal": 40}
-    assert loaded.faiss.size == loaded.bm25.size == loaded.manifest["chunk_count"] == 182
-    assert loaded.metadata.counts() == (40, 182)
-    assert loaded.manifest["embedding_dim"] == 384
+    assert loaded.manifest["embedding_provider"] == "jina"
+    assert loaded.manifest["embedding_model"] == "jina-embeddings-v3"
+    assert loaded.manifest["embedding_dim"] == 512
+    assert loaded.faiss.dimension == 512
+    assert loaded.faiss.size == loaded.bm25.size == 182

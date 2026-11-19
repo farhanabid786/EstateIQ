@@ -47,7 +47,9 @@ class ErrorResponse(BaseModel):
 class HealthResponse(BaseModel):
     status: Literal["ok", "degraded"]
     index_loaded: bool
-    embedding_model_ready: bool
+    embedding_provider: str
+    embedding_provider_configured: bool
+    embedding_dimensions: int
     llm_configured: bool
     embedding_model: Optional[str] = None
     index_build_id: Optional[str] = None

@@ -5,6 +5,7 @@ from typing import Literal, Optional, Protocol, Sequence
 import numpy as np
 
 from app.config import Settings
+from app.memory_diagnostics import log_rss
 from app.retrieval.index_loader import LoadedIndex
 
 logger = logging.getLogger(__name__)
@@ -106,4 +107,5 @@ class HybridRetriever:
             permitted = set(allowed)
             results = [r for r in results if self._index.faiss.company_of(r.vector_id) in permitted]
         logger.debug("Hybrid retrieval: %d dense, %d lexical, %d fused", len(dense), len(lexical), len(results))
+        log_rss("after_retrieval")
         return results

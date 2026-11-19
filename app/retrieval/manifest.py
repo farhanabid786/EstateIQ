@@ -13,7 +13,7 @@ SQLITE_FILENAME = "metadata.sqlite3"
 MANIFEST_FILENAME = "index_manifest.json"
 ARTIFACT_FILENAMES = (FAISS_FILENAME, CHUNKS_FILENAME, SQLITE_FILENAME)
 
-TRACKED_PACKAGES = ("fastembed", "onnxruntime", "faiss-cpu", "rank-bm25", "numpy", "pydantic")
+TRACKED_PACKAGES = ("faiss-cpu", "rank-bm25", "numpy", "pydantic", "httpx")
 
 
 class ManifestError(ValueError):
@@ -59,7 +59,8 @@ def write_manifest(path: Path, manifest: dict[str, Any]) -> None:
 
 
 REQUIRED_KEYS = (
-    "index_schema_version", "build_id", "built_at", "embedding_model", "embedding_dim",
+    "index_schema_version", "build_id", "built_at", "embedding_provider",
+    "embedding_model", "embedding_dim",
     "faiss_index_type", "chunk_size_chars", "chunk_overlap_chars", "document_count",
     "chunk_count", "faiss_vector_count", "company_distribution",
     "content_type_distribution", "source_data_hash", "chunk_data_hash", "packages", "files",

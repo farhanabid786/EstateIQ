@@ -1,6 +1,6 @@
 {
-  "build_id": "01765eb3031417c9",
-  "built_at": "2026-11-19T19:02:45Z",
+  "build_id": "c6968cbe7f9e22e3",
+  "built_at": "2026-11-19T21:06:24Z",
   "chunk_company_distribution": {
     "darglobal": 182
   },
@@ -16,8 +16,9 @@
     "webpage": 39
   },
   "document_count": 40,
-  "embedding_dim": 384,
-  "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+  "embedding_dim": 512,
+  "embedding_model": "jina-embeddings-v3",
+  "embedding_provider": "jina",
   "faiss_index_type": "IndexIDMap2(IndexFlatIP)",
   "faiss_vector_count": 182,
   "files": {
@@ -26,20 +27,19 @@
       "sha256": "2bf726c54f468cabf2a1bf1f193df0d80897a46d8a153d634fe13197508901dd"
     },
     "faiss.index": {
-      "bytes": 281098,
-      "sha256": "d7bfba7bbd1b7f7e19a3f4add53c6eeff681147d8f304a36ad1773bf8102ec48"
+      "bytes": 374282,
+      "sha256": "64d68d8676d8cf2ba62f00b0fa6d79f88413d53461639c7478a002e94ec3f1fd"
     },
     "metadata.sqlite3": {
       "bytes": 253952,
-      "sha256": "851b65635d5ec8d655c3907f1e69cdbd6bd4b5b94cb86e161d9cdf8748d159e2"
+      "sha256": "1651808a6022dd4fc85c10ad68fb428ebbf64168e3907a7b29e4c302dc251c9d"
     }
   },
   "index_schema_version": "1",
   "packages": {
     "faiss-cpu": "1.16.0",
-    "fastembed": "0.9.1",
+    "httpx": "0.28.1",
     "numpy": "2.2.6",
-    "onnxruntime": "1.23.2",
     "pydantic": "2.14.3",
     "rank-bm25": "0.2.2"
   },

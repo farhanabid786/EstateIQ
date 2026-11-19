@@ -32,6 +32,9 @@ def test_health_ok_without_secrets(make_client, rag_settings):
         data = client.get("/health").json()
     assert data["status"] == "ok" and data["index_loaded"] is True
     assert data["embedding_model"] == rag_settings.embedding_model
+    assert data["embedding_provider"] == "jina"
+    assert data["embedding_provider_configured"] is True
+    assert data["embedding_dimensions"] == rag_settings.embedding_dim
     assert "llm_configured" in data and data["index_build_id"]
     assert "key" not in str(data).lower().replace("llm_configured", "")
 

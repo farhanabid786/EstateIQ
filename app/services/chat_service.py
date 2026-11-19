@@ -13,6 +13,7 @@ from app.llm.prompts import (
     INSUFFICIENT_AR, INSUFFICIENT_EN, build_messages, build_summary_messages,
     dominant_language, parse_model_output,
 )
+from app.memory_diagnostics import log_rss
 from app.retrieval.context_builder import ContextBuilder, EvidenceContext
 from app.retrieval.embeddings import EmbeddingError
 from app.retrieval.hybrid import HybridRetriever, has_sufficient_evidence
@@ -67,6 +68,7 @@ class ChatService:
 
     async def _answer(self, request: ChatRequest, request_id: str) -> ChatResponse:
         started = time.monotonic()
+        log_rss("before_full_chat")
         classification = self._classifier.classify(request.question, request.company, request.language)
         if self._explicitly_unsupported(request.question):
             return self._insufficient(request.question, classification, request_id)
@@ -91,6 +93,7 @@ class ChatService:
         summary = await self._summary(classification, cited.text, parsed.summary)
         logger.info("request=%s answered in %.2fs with %d source(s)", request_id,
                     time.monotonic() - started, len(cited.sources))
+        log_rss("after_full_chat")
         return ChatResponse(
             answer=cited.text,
             english_summary=summary,
